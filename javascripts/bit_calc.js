@@ -3,6 +3,13 @@
     	// https://blockchain.info/ru/stats?format=json
     	var stats = {"trade_volume_btc":20558.38042413,"electricity_consumption":4.247113588840637E8,"miners_revenue_usd":2449088.42178,"n_btc_mined":437500000000,"trade_volume_usd":1.1471700038114693E7,"difficulty":3.1295731745222874E9,"minutes_between_blocks":8.228571428571428,"days_destroyed":0.0,"n_tx":70705,"hash_rate":2.7225087107952803E7,"timestamp":1392914289855,"n_blocks_mined":175,"blocks_size":40505389,"total_fees_btc":1457429764,"miners_operating_margin":-2501.0,"total_btc_sent":48200321939415,"estimated_btc_sent":9418058124214,"totalbc":1237927500000000,"electricity_cost_usd":6.370670383260956E7,"n_blocks_total":286903,"nextretarget":288287,"estimated_transaction_volume_usd":5.25533313002132E7,"miners_revenue_btc":4389,"market_price_usd":558.00602};
 
+    	var url = 'http://xn--90aoahqe0a.xn--p1ai/bitcoin_stats.php?url=https://blockchain.info/ru/stats?format=json';
+    	$.getJSON( url, function( data ) {
+    		if (data['status']['http_code'] == 200)
+    		{
+    			stats = data['contents'];
+    		}
+		});
     	var diff_history = [1418481395.2626355, 1789546951.0532405, 2193847870.174279, 2621404453.0646152, 3129573174.5222874];
 
     	var blocks_between_recalc = 2016;
@@ -133,16 +140,8 @@
 				    step += 1;
 			    } while(step < 100 && !stop);
 			    
-			    $('ul.mylist').empty();
-			    var cList = $('ul.mylist');
-				var li = $('<li/>')
-					.addClass('ui-menu-item')
-					.attr('role', 'menuitem')
-					.appendTo(cList);
-				var aaa = $('<b/>')
-					.addClass('ui-all')
-					.text('Profit, Result, Date')
-					.appendTo(li);
+			    var resultTable = $("#resultTable");
+				resultTable.empty();
 
 			    var chartArray = [['Date', 'Profit', 'Result']];
 			    var chartDiffArray = [['Date', 'Difficulty']];
@@ -150,18 +149,21 @@
 			    // var prevDiff = stats['difficulty'];
 			    // chartDiffArray.push([, prevDiff]);
 			    chartArray.push([prevDate, 0, 0]);
+				function padStr(i) {
+				    return (i < 10) ? "0" + i : "" + i;
+				}
+
 				$.each(profit_list, function(i)
 				{
-				    var li = $('<li/>')
-				        .addClass('ui-menu-item')
-				        .attr('role', 'menuitem')
-				        .appendTo(cList);
 				    var datetime = profit_list[i]['date'];
-				    var dateStr = datetime.getDate() + '-' + (datetime.getMonth() + 1) + '-' + datetime.getFullYear();
-				    var aaa = $('<i/>')
-				        .addClass('ui-all')
-				        .text(profit_list[i]['profit'].toFixed(6) + ', ' + profit_list[i]['result'].toFixed(6) + ', ' + dateStr )
-				        .appendTo(li);
+				    var dateStr = padStr(datetime.getDate()) + '-' + padStr(datetime.getMonth() + 1) + '-' + datetime.getFullYear();
+			    	
+			    	resultTable.append('<tr><td>'+ 
+			    		dateStr +'</td><td>'+ 
+			    		profit_list[i]['profit'].toFixed(6) +'</td><td>'+ 
+			    		profit_list[i]['result'].toFixed(6) +'</td></tr>');
+
+
 			    	chartArray.push([profit_list[i]['date'], profit_list[i]['profit'], profit_list[i]['result']]);
 				    //var d = profit_list[i]['date'];
 				    //if (prevDiff != 0)
