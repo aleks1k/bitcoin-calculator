@@ -477,3 +477,13 @@ footer a:hover {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {}
+
+#calculator-form form {
+  padding: 20px 10px;
+}
+
+.main-logo {
+  height: 100px;
+  padding: 15px 2px;
+
+}
