@@ -21,9 +21,9 @@
 
 		diffInc_aver = diffInc_aver.toFixed(3);
 
-		var calc_profit = function(diff, hashrate, time, block_reward)
+		var calc_profit = function(diff, hashrate, time, block_reward, poolFee, elBtcCostPerSecond)
 		{
-			return block_reward * time / diff * hashrate / Math.pow(2, 32);
+			return ( block_reward * time / diff * hashrate / Math.pow(2, 32) ) * (1 - poolFee) - elBtcCostPerSecond * time;
 		};
 
     	var calc = function()
@@ -37,7 +37,19 @@
 			    var hardwarePower = $("#hardwarePower").val();
 			    var electricityPrice = $("#electricityPrice").val(); //usd
 			    var rate = 630;
-			    var elBtcCostPerSecond = hardwarePower / 1000 * electricityPrice / 630 / 60 / 60;
+			    var elBtcCostPerSecond = hardwarePower / 1000 * electricityPrice / rate / 60 / 60;
+
+			    var start_date = Date.parse($("#startdate").val())
+			    if (!isNaN(start_date))
+		    	{
+		    		start_date /= 1000;
+		    	}
+			    var end_date = Date.parse($("#enddate").val());
+			    if (!isNaN(end_date))
+		    	{
+		    		end_date /= 1000;
+		    	}
+			    console.log(start_date, end_date);
 
 
 			    var n_blocks_total = stats['n_blocks_total'];
@@ -45,34 +57,81 @@
 			    var minutes_between_blocks = stats['minutes_between_blocks'];
 			    var all_hashrate = diff * Math.pow(2, 32) / ( minutes_between_blocks * 60 ) / 1e12;
 			    var blocks_left = blocks_between_recalc - n_blocks_total % blocks_between_recalc;
-			    var next_diff_time_left = 0.5 * blocks_left * (minutes_between_blocks*60 + (10*60/(1 + diffInc)));
+			    var next_diff_time_left = 0.5 * blocks_left * (minutes_between_blocks * 60 + (10 * 60 / (1 + diffInc)));
 
-			    console.log(hashrate, diff, block_reward, all_hashrate, blocks_left, next_diff_time_left/60/60);
+			    console.log(hashrate, diff, block_reward, all_hashrate, blocks_left, next_diff_time_left);
 
-			    var result = calc_profit(diff, hashrate * hashrate_level, next_diff_time_left, block_reward) * (1 - poolFee) - elBtcCostPerSecond * next_diff_time_left;
+			    var profit_list = [];
+			    var curr_diff = diff;	
+			    var nowtime = stats['timestamp'] / 1000;
+			    var curr_time = nowtime + next_diff_time_left;
+			    if (isNaN(start_date) || nowtime > start_date)
+			    {
+			    	start_date = NaN;
+			    }
+			    else if (curr_time < start_date)
+			    {
+			    	next_diff_time_left = 0;
+			    }
+			    else
+			    {
+			    	profit_list.push({date: new Date(nowtime * 1000), diff: curr_diff, profit: 0, result: 0});
+			    	profit_list.push({date: new Date(start_date * 1000), diff: curr_diff, profit: 0, result: 0});
+			    	next_diff_time_left = curr_time - start_date;
+			    }
+
+			    var result = 0;
+			    var profit = calc_profit(diff, hashrate * hashrate_level, next_diff_time_left, block_reward, poolFee, elBtcCostPerSecond);
 
 			    var n_blocks = Math.ceil(n_blocks_total / blocks_between_recalc);
-			    var curr_diff = diff;
-			    var curr_time = stats['timestamp'] + next_diff_time_left * 1000;
-			    var profit_list = [];
-			    profit_list.push({date: new Date(curr_time), diff: curr_diff, profit: result, result: result});
-			    console.log(new Date(curr_time), next_diff_time_left/60/60/24, curr_diff, result);
+
+			    if (profit != 0)
+				{
+					result += profit;
+				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: result, result: result});
+				}
+			    console.log(curr_time, next_diff_time_left, curr_diff, result);
 			    var step = 0;
+			    var stop = false;
 			    do
 			    {
 			    	curr_diff *= 1 + diffInc;
 				    var block_reward = 50 * Math.pow(0.5, Math.floor(n_blocks_total / 210000));
-				    var diff_time = 0.5 * blocks_between_recalc * (10*60 + (10*60/(1 + diffInc)));
-				    curr_time += diff_time * 1000;
-			    	var profit = calc_profit(curr_diff, hashrate * hashrate_level, diff_time, block_reward) * (1 - poolFee) - elBtcCostPerSecond * diff_time;
+				    var diff_time = 0.5 * blocks_between_recalc * (10 * 60 * (1 + 1/(1 + diffInc)));
+			    	n_blocks += blocks_between_recalc;
+
+				    if (isNaN(start_date) || curr_time > start_date)
+				    {
+				    	start_date = NaN;
+				    }
+				    else if ( (curr_time + diff_time) < start_date )
+				    {
+				    	curr_time += diff_time;
+				    	profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: 0, result: 0});
+				    	continue;
+				    	diff_time = 0;
+				    }
+				    else
+				    {
+				    	profit_list.push({date: new Date(start_date * 1000), diff: curr_diff, profit: 0, result: 0});
+				    	diff_time = (curr_time + diff_time) - start_date;
+				    	curr_time = start_date;
+				    }
+
+				    if (!isNaN(end_date) && (curr_time + diff_time) > end_date)
+				    {
+				    	diff_time = end_date - curr_time;
+				    	stop = true;
+					}
+				    curr_time += diff_time;
+			    	var profit = calc_profit(curr_diff, hashrate * hashrate_level, diff_time, block_reward, poolFee, elBtcCostPerSecond);
 			    	if (profit <= 1e-6)
 			    		break;
 			    	result += profit;
-			    	n_blocks += blocks_between_recalc;
-			    	console.log(new Date(curr_time), diff_time/60/60/24, curr_diff, profit, result);
-				    profit_list.push({date: new Date(curr_time), diff: curr_diff, profit: profit, result: result});
+			    	console.log(curr_time, diff_time/60/60/24, curr_diff, profit, result);
+				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: profit, result: result});
 				    step += 1;
-			    } while(profit > 0 && step < 100);
+			    } while(step < 100 && !stop);
 			    
 			    $('ul.mylist').empty();
 			    var cList = $('ul.mylist');
@@ -103,7 +162,7 @@
 				        .addClass('ui-all')
 				        .text(profit_list[i]['profit'].toFixed(6) + ', ' + profit_list[i]['result'].toFixed(6) + ', ' + dateStr )
 				        .appendTo(li);
-				    chartArray.push([profit_list[i]['date'], profit_list[i]['profit'], profit_list[i]['result']]);
+			    	chartArray.push([profit_list[i]['date'], profit_list[i]['profit'], profit_list[i]['result']]);
 				    //var d = profit_list[i]['date'];
 				    //if (prevDiff != 0)
 				    //{
@@ -122,6 +181,10 @@
 				  height: 400,
 				  vAxis: {title: 'BTC',  titleTextStyle: {color: '#333'}, minValue: 0}
 				};
+				if (!isNaN(start_date))
+				{
+					options['hAxis'] = {minValue: new Date(start_date*1000)};
+				}
 
 				var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
 				chart.draw(data, options);
@@ -166,6 +229,12 @@
     	calc();
     });
     $("#hardwarePower").change(function(event) {
+    	calc();
+    });
+    $("#startdate").change(function(event) {
+    	calc();
+    });
+    $("#enddate").change(function(event) {
     	calc();
     });
  });

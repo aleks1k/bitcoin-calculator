@@ -8,12 +8,13 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/datepicker3.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <title>Bitcoin-calculator by aleks1k</title>
+    <title>Bitcoin calculator</title>
 
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -38,12 +39,14 @@
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="javascripts/bit_calc.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="javascripts/locales/bootstrap-datepicker.ru.js"></script>
   </head>
 
   <body>
     <header>
       <div class="inner">
-        <h1>Bitcoin-calculator</h1>
+        <!-- <h1>Bitcoin-calculator</h1> -->
         <h2>Bitcoin Mining Calculator</h2>
       </div>
     </header>
@@ -88,6 +91,28 @@
 		      <span class="input-group-addon">%</span>
   			</div>
 	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="startdate" class="col-sm-3 control-label">Start Date</label>
+	    <div class="col-sm-4">
+	      	<div class="input-group date">
+			  <input type="text" id="startdate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+	    </div>
+	    <label for="enddate" class="col-sm-1 control-label">End</label>
+	    <div class="col-sm-4">
+	    	<div class="input-group date">
+  				<input type="text" id="enddate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+	    </div>
+	    <script>
+		    $('.input-group.date').datepicker({
+			    weekStart: 1,
+			    todayBtn: "linked",
+			    autoclose: true,
+			    todayHighlight: true
+			});
+	    </script>
 	  </div>
   	  <div class="form-group">
 	    <label for="poolFee" class="col-sm-3 control-label">Pool Fee</label>
