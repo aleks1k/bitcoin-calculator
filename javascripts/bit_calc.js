@@ -28,7 +28,7 @@
 
 		diffInc_aver = diffInc_aver.toFixed(3);
 
-		var calc_profit = function(diff, hashrate, time, block_reward, poolFee, elBtcCostPerSecond)
+		var calc_profit = function(diff, hashrate, time, block_reward, poolFee, elBtcCostPerSecond, rate)
 		{
 			return ( block_reward * time / diff * hashrate / Math.pow(2, 32) ) * (1 - poolFee) - elBtcCostPerSecond * time;
 		};
@@ -43,8 +43,10 @@
 			    var poolFee = $("#poolFee").val() / 100;
 			    var hardwarePower = $("#hardwarePower").val();
 			    var electricityPrice = $("#electricityPrice").val(); //usd
-			    var rate = 630;
-			    var elBtcCostPerSecond = hardwarePower / 1000 * electricityPrice / rate / 60 / 60;
+			    var rate = $("#inputCurrencyRate").val();
+			    var usd_rate = stats['market_price_usd'];
+			    var currency = $("#inputCurrency").val();
+			    var elBtcCostPerSecond = hardwarePower / 1000 * electricityPrice / usd_rate / 60 / 60;
 
 			    var start_date = Date.parse($("#startdate").val())
 			    if (!isNaN(start_date))
@@ -88,14 +90,14 @@
 			    }
 
 			    var result = 0;
-			    var profit = calc_profit(diff, hashrate * hashrate_level, next_diff_time_left, block_reward, poolFee, elBtcCostPerSecond);
+			    var profit = calc_profit(diff, hashrate * hashrate_level, next_diff_time_left, block_reward, poolFee, elBtcCostPerSecond, rate);
 
 			    var n_blocks = Math.ceil(n_blocks_total / blocks_between_recalc);
 
 			    if (profit != 0)
 				{
 					result += profit;
-				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: result, result: result});
+				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: result * rate, result: result * rate});
 				}
 			    console.log(curr_time, next_diff_time_left, curr_diff, result);
 			    var step = 0;
@@ -136,7 +138,7 @@
 			    		break;
 			    	result += profit;
 			    	console.log(curr_time, diff_time/60/60/24, curr_diff, profit, result);
-				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: profit, result: result});
+				    profit_list.push({date: new Date(curr_time * 1000), diff: curr_diff, profit: profit * rate, result: result * rate});
 				    step += 1;
 			    } while(step < 100 && !stop);
 			    
@@ -181,7 +183,7 @@
 				var options = {
 				  title: 'Profit',
 				  height: 400,
-				  vAxis: {title: 'BTC',  titleTextStyle: {color: '#333'}, minValue: 0}
+				  vAxis: {title: currency,  titleTextStyle: {color: '#333'}, minValue: 0}
 				};
 				if (!isNaN(start_date))
 				{
@@ -204,7 +206,12 @@
 				chartDiff.draw(data, options);
 
 			    console.log(result);
-			    $("#result").text(result.toFixed(6));
+			    var res_str = result.toFixed(6) + ' BTC';
+			    if (currency != 'BTC')
+			    { 
+			    	res_str += ' = ' + (result*rate).toFixed(0) + ' ' + currency;
+				}
+			    $("#result").text(res_str);
     	};
 
      $(document).ready(function(){
@@ -237,6 +244,37 @@
     	calc();
     });
     $("#enddate").change(function(event) {
+    	calc();
+    });
+    $("#inputCurrency").change(function(event) {
+    	var c = $("#inputCurrency").val();
+    	var rate = 1;
+    	$("#rateControl").show();
+    	if (c == 'USD')
+    	{
+    		rate = stats['market_price_usd'];
+    	}
+    	else if (c == 'RUR')
+    	{
+    		rate = stats['market_price_usd'] * 35;
+    	}
+    	else if (c == 'EUR')
+    	{
+    		rate = stats['market_price_usd'] / 1.369;
+    	}
+    	else if (c == 'CNY')
+    	{
+    		rate = stats['market_price_usd'] * 6.08339;
+    	}
+    	else
+    	{
+    		$("#rateControl").hide();
+    	}
+
+    	$("#inputCurrencyRate").val(rate);
+    	calc();
+    }).change();
+    $("#inputCurrencyRate").change(function(event) {
     	calc();
     });
  });
