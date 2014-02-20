@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bitcoin Calculator</title>
+
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="bit_calc.js"></script>
+  </head>
+  <body>
+	<div class="container-fluid">
+		<header>
+			<div class="row">
+				<div class="col-md-4">
+					<img src="icon-calculator.png" class="main-logo">
+				</div>
+				<div class="col-md-2">
+					<img src="bitcoin-logo.jpg" class="main-logo img-circle">
+				</div>
+				<div class="col-md-6">
+					<h1>Bitcoin Calculator</h1>
+				</div>
+			</div>
+		</header>
+	</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-4">
+			<div id="calculator-form">
+	<form class="form-horizontal" role="form">
+	  <div class="form-group">
+	    <label for="inputHashrate" class="col-sm-3 control-label">Hash Rate</label>
+	    <div class="col-sm-6">
+	      <input type="email" class="form-control" id="inputHashrate" placeholder="Hash Rate" value="113">
+	    </div>
+	    <div class="col-sm-3">
+	    	<select class="form-control" id="hashrate_level">
+	    		<option value="1024">kH/s</option>
+	    		<option value="1e6">MH/s</option>
+	    		<option value="1e9" selected="selected">GH/s</option>
+	    		<option value="1e12">TH/s</option>		
+	    	</select>
+	    </div>
+	  </div>
+  	  <div class="form-group">
+	    <label for="hardwarePower" class="col-sm-3 control-label">Hardware Power</label>
+	    <div class="col-sm-9">
+	    	<div class="input-group">
+		      <input type="text" class="form-control" id="hardwarePower" placeholder="Hardware Power" value="500">
+		      <span class="input-group-addon">Watts</span>
+  			</div>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="difficulty" class="col-sm-3 control-label">Difficulty</label>
+	    <div class="col-sm-4">
+	      <input type="text" class="form-control" id="difficulty" placeholder="Difficulty">
+	    </div>
+	    <label for="difficultyIncrement" class="col-sm-2 control-label">Increment</label>
+	    <div class="col-sm-3">
+	    	<div class="input-group">
+		      <input type="text" class="form-control" id="difficultyIncrement" placeholder="Difficulty Increment" value="30">
+		      <span class="input-group-addon">%</span>
+  			</div>
+	    </div>
+	  </div>
+  	  <div class="form-group">
+	    <label for="poolFee" class="col-sm-3 control-label">Pool Fee</label>
+	    <div class="col-sm-9">
+	    	<div class="input-group">
+		      <input type="text" class="form-control" id="poolFee" placeholder="Pool Fee" value="3">
+		      <span class="input-group-addon">%</span>
+  			</div>
+	    </div>
+	  </div>
+
+  	  <div class="form-group">
+	    <label for="electricityPrice" class="col-sm-3 control-label">Electricity Price</label>
+	    <div class="col-sm-9">
+	    	<div class="input-group">
+		      <input type="text" class="form-control" id="electricityPrice" placeholder="Electricity Price" value="0.1">
+		      <span class="input-group-addon">USD</span>
+  			</div>
+	    </div>
+	  </div>
+
+	</form>
+</div>
+		</div>
+		<div class="col-md-8">
+<div class="row">
+	<div class="jambotron">
+		<h3>Results</h3>
+		<p>
+	    <label class="col-sm-2 control-label">All Profit (BTC):</label>
+	    <label class="col-sm-10 form-control-static" id="result"></label>
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div id="chart_div"></div>
+</div>
+<div class="row">
+	<div id="chart_diff_div"></div>
+</div>
+<div class="row">
+	<ul class="mylist col-sm-12">
+	</ul>
+</div>
+		</div>
+	</div>
+</div>
+  </body>
+</html>
