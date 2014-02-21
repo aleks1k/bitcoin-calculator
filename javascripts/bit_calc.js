@@ -144,6 +144,9 @@
 		    	this.current.n_blocks = this.stats.n_blocks_total;
 		    	this.current.startTimePeriod = this.stats.timestamp / 1000;
 		    	this.current.endTimePeriod = this.current.startTimePeriod + this.stats.next_diff_time_left;
+
+		    	this.result.timeDiff = 0.5 * blocks_between_recalc * (10 * 60 * (1 + 1/(1 + this.inputDifficultyIncrement))) /60/60/24;
+		    	this.result.timeDiff = this.result.timeDiff.toFixed(2);
 			};
 		    params.calc_profit_step = function(){
 			    var block_reward = 50 * Math.pow(0.5, Math.floor(this.current.n_blocks / 210000));
@@ -210,7 +213,7 @@
 			    var resultTable = $("#resultTable");
 				resultTable.empty();
 
-			    var chartArray = [['Date', 'Profit', 'Result'], [new Date(params.result.startTime*1000), 0, 0]];
+			    var chartArray = [['Date', 'Profit'], [new Date(params.result.startTime*1000), 0]];
 			    var chartDiffArray = [['Date', 'Difficulty']];
 			    var prevDate = new Date(stats['timestamp']);
 			    // var prevDiff = stats['difficulty'];
@@ -231,7 +234,7 @@
 			    		profit_list[i]['result'].toFixed(6) +'</td></tr>');
 
 
-			    	chartArray.push([profit_list[i]['date'], profit_list[i]['profit'], profit_list[i]['result']]);
+			    	chartArray.push([profit_list[i]['date'], profit_list[i]['result']]); //profit_list[i]['profit'], 
 				    //var d = profit_list[i]['date'];
 				    //if (prevDiff != 0)
 				    //{
@@ -247,6 +250,7 @@
 
 				var options = {
 				  title: 'Profit',
+				  legend: {position: 'none'},
 				  height: 400,
 				  vAxis: {title: params.inputCurrency,  titleTextStyle: {color: '#333'}, minValue: 0}
 				};
@@ -263,6 +267,7 @@
 
 				options = {
 				  title: 'Difficulty',
+				  legend: {position: 'none'},
 				  height: 400,
 				  vAxis: {minValue: 0}
 				};
@@ -277,6 +282,7 @@
 			    	res_str += ' = ' + (params.result.btcSum*params.inputCurrencyRate).toFixed(0) + ' ' + params.inputCurrency;
 				}
 			    $("#result").text(res_str);
+			    $("#resultDiffTime").text(params.result.timeDiff + ' days')
     	};
 
      $(document).ready(function(){
