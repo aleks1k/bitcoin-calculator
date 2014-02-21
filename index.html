@@ -59,10 +59,10 @@
 	  <div class="form-group">
 	    <label for="inputHashrate" class="col-sm-3 control-label">Hash Rate</label>
 	    <div class="col-sm-6">
-	      <input type="text" class="form-control" id="inputHashrate" placeholder="Hash Rate" value="113">
+	      <input type="text" class="form-control" id="inputHashrate" placeholder="Hash Rate" value="100">
 	    </div>
 	    <div class="col-sm-3">
-	    	<select class="form-control" id="hashrate_level">
+	    	<select class="form-control" id="inputHashrateLevel">
 	    		<option value="1024">kH/s</option>
 	    		<option value="1e6">MH/s</option>
 	    		<option value="1e9" selected="selected">GH/s</option>
@@ -71,38 +71,38 @@
 	    </div>
 	  </div>
   	  <div class="form-group">
-	    <label for="hardwarePower" class="col-sm-3 control-label">Hardware Power</label>
+	    <label for="inputHardwarePower" class="col-sm-3 control-label">Hardware Power</label>
 	    <div class="col-sm-9">
 	    	<div class="input-group">
-		      <input type="text" class="form-control" id="hardwarePower" placeholder="Hardware Power" value="500">
+		      <input type="text" class="form-control" id="inputHardwarePower" placeholder="Hardware Power" value="200">
 		      <span class="input-group-addon">Watts</span>
   			</div>
 	    </div>
 	  </div>
 	  <div class="form-group">
-	    <label for="difficulty" class="col-sm-3 control-label">Difficulty</label>
+	    <label for="inputDifficulty" class="col-sm-3 control-label">Difficulty</label>
 	    <div class="col-sm-4">
-	      <input type="text" class="form-control" id="difficulty" placeholder="Difficulty">
+	      <input type="text" class="form-control" id="inputDifficulty" placeholder="Difficulty">
 	    </div>
-	    <label for="difficultyIncrement" class="col-sm-2 control-label">Increment</label>
+	    <label for="inputDifficultyIncrement" class="col-sm-2 control-label">Increment</label>
 	    <div class="col-sm-3">
 	    	<div class="input-group">
-		      <input type="text" class="form-control" id="difficultyIncrement" placeholder="Difficulty Increment" value="30">
+		      <input type="text" class="form-control" id="inputDifficultyIncrement" placeholder="Difficulty Increment" value="20">
 		      <span class="input-group-addon">%</span>
   			</div>
 	    </div>
 	  </div>
 	  <div class="form-group">
-	    <label for="startdate" class="col-sm-3 control-label">Start Date</label>
+	    <label for="inputStartDate" class="col-sm-3 control-label">Start Date</label>
 	    <div class="col-sm-4">
 	      	<div class="input-group date">
-			  <input type="text" id="startdate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			  <input type="text" id="inputStartDate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 			</div>
 	    </div>
-	    <label for="enddate" class="col-sm-1 control-label">End</label>
+	    <label for="inputEndDate" class="col-sm-1 control-label">End</label>
 	    <div class="col-sm-4">
 	    	<div class="input-group date">
-  				<input type="text" id="enddate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+  				<input type="text" id="inputEndDate" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 			</div>
 	    </div>
 	    <script>
@@ -115,20 +115,20 @@
 	    </script>
 	  </div>
   	  <div class="form-group">
-	    <label for="poolFee" class="col-sm-3 control-label">Pool Fee</label>
+	    <label for="inputPoolFee" class="col-sm-3 control-label">Pool Fee</label>
 	    <div class="col-sm-9">
 	    	<div class="input-group">
-		      <input type="text" class="form-control" id="poolFee" placeholder="Pool Fee" value="3">
+		      <input type="text" class="form-control" id="inputPoolFee" placeholder="Pool Fee" value="0">
 		      <span class="input-group-addon">%</span>
   			</div>
 	    </div>
 	  </div>
 
   	  <div class="form-group">
-	    <label for="electricityPrice" class="col-sm-3 control-label">Electricity Price</label>
+	    <label for="inputElectricityPrice" class="col-sm-3 control-label">Electricity Price</label>
 	    <div class="col-sm-9">
 	    	<div class="input-group">
-		      <input type="text" class="form-control" id="electricityPrice" placeholder="Electricity Price" value="0.1">
+		      <input type="text" class="form-control" id="inputElectricityPrice" placeholder="Electricity Price" value="0.1">
 		      <span class="input-group-addon">USD/kWh</span>
   			</div>
 	    </div>
