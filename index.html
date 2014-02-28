@@ -56,6 +56,28 @@
 		<div class="col-md-6">
 			<div id="calculator-form">
 	<form class="form-horizontal" role="form">
+		<div class="form-group">
+		<div class="btn-group col-md-offset-3">
+		  <button type="button" class="btn btn-default" id="bitcoin_on">Bitcoin</button>
+		  <button type="button" class="btn btn-default" id="litecoin_on">Litecoin</button>
+		  <div class="btn-group">
+		    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		      SHA-256 Coins
+		      <span class="caret"></span>
+		    </button>
+		    <ul id="crypto_coins_sha" class="dropdown-menu">
+		    </ul>
+		  </div>
+		  <div class="btn-group">
+		    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		      Scrypt Coins
+		      <span class="caret"></span>
+		    </button>
+		    <ul id="crypto_coins_scrypt" class="dropdown-menu">
+		    </ul>
+		  </div>
+		</div>
+		</div>
 	  <div class="form-group">
 	    <label for="inputHashrate" class="col-sm-3 control-label">Hash Rate</label>
 	    <div class="col-sm-6">
@@ -137,7 +159,7 @@
 	    <label for="inputCurrency" class="col-sm-3 control-label">Currency</label>
 	    <div class="col-sm-3">
 	    	<select class="form-control" id="inputCurrency">
-	    		<option value="BTC" selected="selected">BTC</option>
+	    		<option id='base_curr' value="BASE_CURR" selected="selected">BTC</option>
 	    		<option value="USD">USD</option>
 	    		<option value="RUR">RUR</option>
 	    		<option value="EUR">EUR</option>		
