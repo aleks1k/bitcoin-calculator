@@ -99,6 +99,21 @@
 		    			st_res.reward_halved_blocks = 840000;
 						st_res.diff_history = [3300, 2820, 3508, 2674, 2690, 3207, 2871, 3322];
 		    		}
+		    		else if (entry.symbol == 'DOGE')
+		    		{
+		    			st_res.blocks_between_recalc = 4 * 60;
+		    			st_res.reward_func = function(val)
+		    			{
+		    				var block_n = val.stats.n_blocks_total;
+		    				if (block_n > 600000)
+		    					this.block_reward = 10000;
+		    				else{
+		    					var max_reward = 1000000 * Math.pow(0.5, Math.floor(block_n / 100000));
+	    						this.block_reward = 0.5 * max_reward;
+		    				}
+		    				return this.block_reward;
+		    			};
+		    		}
 					// break;
     			}
 			});
@@ -151,6 +166,11 @@
 		    params.calc_coins_constants = function(){
 		    	if (this.stats.reward_halved_blocks != undefined) {
 		    		this.stats.block_reward = 50 * Math.pow(0.5, Math.floor(this.stats.n_blocks_total / this.stats.reward_halved_blocks));
+		    		console.log(this.stats.block_reward);
+		    	}
+		    	else if (this.stats.reward_func != undefined)
+		    	{
+		    		this.stats.block_reward = this.stats.reward_func(this);
 		    		console.log(this.stats.block_reward);
 		    	}
 		    	this.stats.all_hashrate = this.inputDifficulty * Math.pow(2, 32) / ( this.stats.minutes_between_blocks * 60 ) / 1e12;
