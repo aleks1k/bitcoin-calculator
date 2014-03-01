@@ -192,15 +192,23 @@
 		<div class="col-md-6">
 <div class="row">
 	<div class="jambotron">
-		<h3>Results</h3>
+		<h3 id="result_h">Results</h3>
 		<p>
 		<div class="row">
+		    <label class="col-sm-4 control-label">Share your analysis:</label>
+		    <div class="col-sm-6" rel="tooltip" title="copy this url">
+				<div class="input-group" id="savedUrl">		    	
+		    		<input type="text" onclick="this.select();" class="form-control readOnly"><a class="input-group-addon"><i class="glyphicon glyphicon-export"></i></a>
+		    	</div>
+		    </div>
+		</div>
+		<div class="row">
 		    <label class="col-sm-4 control-label">All Profit:</label>
-		    <label class="col-sm-8 form-control-static" id="result"></label>
+		    <label class="col-sm-6 form-control-static" id="result"></label>
 		</div>
 		<div class="row">
 			<label class="col-sm-4 control-label">Time between difficulties recalculate:</label>
-			<label class="col-sm-8 form-control-static" id="resultDiffTime">10 days</label>
+			<label class="col-sm-6 form-control-static" id="resultDiffTime">10 days</label>
 		</div>
 		</p>
 	</div>
@@ -215,16 +223,20 @@
 		</div>
 	</div>
 
-            <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-28899282-2");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+	<script type="text/javascript">
+	    $(function () {
+        	$("[rel='tooltip']").tooltip();
+    	});
+    	
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+		try {
+		  var pageTracker = _gat._getTracker("UA-28899282-2");
+		pageTracker._trackPageview();
+		} catch(err) {}
+	</script>
 
   </body>
 </html>

@@ -1,10 +1,10 @@
 		google.load("visualization", "1", {packages:["corechart"]});
 
     	// https://blockchain.info/ru/stats?format=json
-    	var btc_stats = {"trade_volume_btc":20558.38042413,"electricity_consumption":4.247113588840637E8,"miners_revenue_usd":2449088.42178,"n_btc_mined":437500000000,"trade_volume_usd":1.1471700038114693E7,"difficulty":3.1295731745222874E9,"minutes_between_blocks":8.228571428571428,"days_destroyed":0.0,"n_tx":70705,"hash_rate":2.7225087107952803E7,"timestamp":1392914289855,"n_blocks_mined":175,"blocks_size":40505389,"total_fees_btc":1457429764,"miners_operating_margin":-2501.0,"total_btc_sent":48200321939415,"estimated_btc_sent":9418058124214,"totalbc":1237927500000000,"electricity_cost_usd":6.370670383260956E7,"n_blocks_total":286903,"nextretarget":288287,"estimated_transaction_volume_usd":5.25533313002132E7,"miners_revenue_btc":4389,"market_price_usd":558.00602};
+    	var btc_stats = {}; //{"trade_volume_btc":20558.38042413,"electricity_consumption":4.247113588840637E8,"miners_revenue_usd":2449088.42178,"n_btc_mined":437500000000,"trade_volume_usd":1.1471700038114693E7,"difficulty":3.1295731745222874E9,"minutes_between_blocks":8.228571428571428,"days_destroyed":0.0,"n_tx":70705,"hash_rate":2.7225087107952803E7,"timestamp":1392914289855,"n_blocks_mined":175,"blocks_size":40505389,"total_fees_btc":1457429764,"miners_operating_margin":-2501.0,"total_btc_sent":48200321939415,"estimated_btc_sent":9418058124214,"totalbc":1237927500000000,"electricity_cost_usd":6.370670383260956E7,"n_blocks_total":286903,"nextretarget":288287,"estimated_transaction_volume_usd":5.25533313002132E7,"miners_revenue_btc":4389,"market_price_usd":558.00602};
 
     	// http://www.coinchoose.com/api.php?base=BTC
-    	var coins_stats = [{"0":"LTC","symbol":"LTC","1":"Litecoin","name":"Litecoin","2":"scrypt","algo":"scrypt","3":"517821","currentBlocks":"517821","4":"3206.90479195","difficulty":"3206.90479195","5":"50","reward":"50","6":"2.5","minBlockTime":"2.5","7":"101606082519","networkhashrate":"101606082519","price":"0.02532","exchange":"BTC-e","exchange_url":"https:\/\/btc-e.com","ratio":4941.8862061521,"adjustedratio":4817.3008396105,"avgProfit":"5034.156551355906","avgHash":"85536263767.5526"}];
+    	var coins_stats = []; //[{"0":"LTC","symbol":"LTC","1":"Litecoin","name":"Litecoin","2":"scrypt","algo":"scrypt","3":"517821","currentBlocks":"517821","4":"3206.90479195","difficulty":"3206.90479195","5":"50","reward":"50","6":"2.5","minBlockTime":"2.5","7":"101606082519","networkhashrate":"101606082519","price":"0.02532","exchange":"BTC-e","exchange_url":"https:\/\/btc-e.com","ratio":4941.8862061521,"adjustedratio":4817.3008396105,"avgProfit":"5034.156551355906","avgHash":"85536263767.5526"}];
 
 		var getDiffIncrice = function(diff_history)
 		{
@@ -65,7 +65,7 @@
     	var base_crypto = "BTC";
 
     	var stats = {};
-    	var btc_market_price_usd = btc_stats.market_price_usd;
+    	var btc_market_price_usd = 550;
     	var timestamp = (new Date().getTime());
 
     	var get_crypto_stats = function(crypto){
@@ -120,47 +120,70 @@
 			console.log(st_res);
 			return st_res;
     	};
+    	var params = {};
+		function padStr(i) {
+		    return (i < 10) ? "0" + i : "" + i;
+		};
+
+    	var getDateStr = function(date){
+			return padStr(date.getMonth() + 1) + '/' + padStr(date.getDate()) + '/' + date.getFullYear();
+    	};
+		var update_saved_url = function(){
+			if (params.input && !(Object.keys(params.input).length === 0))
+			{
+				var url = document.location.protocol +"//"+ document.location.hostname + document.location.pathname + '?' + $.param(params.input) + location.hash;
+				console.log(url);
+				$("#savedUrl input").val(url);
+				$("#savedUrl a").attr('href', url);
+			}
+		};
     	var calc = function()
     	{
+    		update_curr_rate();
+
     		var inputs = $('#calculator-form form :input');
-    		var params = {};
+    		params = {input: {}};
 			inputs.each(function() {
 				var id = $(this).attr('id');
 				var val = $(this).val();
-				if (id == 'inputDifficultyIncrement' || id == 'inputPoolFee')
-				{
-					val /= 100;
-				}
-				else if (id == 'inputStartDate' || id == 'inputEndDate')
-				{
-					val = Date.parse(val);
-				    if (!isNaN(val)) {
-			    		val /= 1000;
-			    	}
-				}
-				else if (id == 'inputDifficulty')
-				{
-					val = Number(val);
-				}
-				else if (id == 'inputCurrency')
-				{
-					params.currency = val;
-					if (val == "BASE_CURR"){
-						params.currency = base_crypto;
+				// console.log(id);
+				if (id && id.indexOf("input") == 0) {
+					id = id.replace("input", "");
+					if (id == 'DifficultyIncrement' || id == 'PoolFee')
+					{
+						val /= 100;
 					}
-				}
-        		params[id] = val;
+					else if (id == 'StartDate' || id == 'EndDate')
+					{
+						val = Date.parse(val);
+					    if (!isNaN(val)) {
+				    		val /= 1000;
+				    	}
+					}
+					else if (id == 'Difficulty')
+					{
+						val = Number(val);
+					}
+					else if (id == 'Currency')
+					{
+						params.currency = val;
+						if (val == "BASE_CURR"){
+							params.currency = base_crypto;
+						}
+					}
+	        		params.input[id] = val;
+	        	}
     		});
 
     		params.stats = stats;
 
     		params.hashrate = function() {
-    			return this.inputHashrate * this.inputHashrateLevel;
+    			return this.input.Hashrate * this.input.HashrateLevel;
     		};
 
 		    params.elBtcCostPerSecond = function(){
 			    var usd_rate = this.stats.market_price_usd;
-		    	return this.inputHardwarePower / 1000 * this.inputElectricityPrice / usd_rate / 60 / 60;
+		    	return this.input.HardwarePower / 1000 * this.input.ElectricityPrice / usd_rate / 60 / 60;
 		    };
 
 		    params.calc_coins_constants = function(){
@@ -173,73 +196,73 @@
 		    		this.stats.block_reward = this.stats.reward_func(this);
 		    		console.log(this.stats.block_reward);
 		    	}
-		    	this.stats.all_hashrate = this.inputDifficulty * Math.pow(2, 32) / ( this.stats.minutes_between_blocks * 60 ) / 1e12;
+		    	this.stats.all_hashrate = this.input.Difficulty * Math.pow(2, 32) / ( this.stats.minutes_between_blocks * 60 ) / 1e12;
 		    	this.stats.blocks_left = this.stats.blocks_between_recalc - this.stats.n_blocks_total % this.stats.blocks_between_recalc;
 
 			    //this.n_blocks = Math.ceil(n_blocks_total / blocks_between_recalc);
 
-		    	this.stats.next_diff_time_left = 0.5 * this.stats.blocks_left * (this.stats.minutes_between_blocks * 60 + (this.stats.minutes_between_blocks_normal * 60 / (1 + this.inputDifficultyIncrement)));
+		    	this.stats.next_diff_time_left = 0.5 * this.stats.blocks_left * (this.stats.minutes_between_blocks * 60 + (this.stats.minutes_between_blocks_normal * 60 / (1 + this.input.DifficultyIncrement)));
 		    };
 
 		    params.getProfit = function(diff, time)
 			{
-				return ( this.stats.block_reward * time / diff * this.hashrate() / Math.pow(2, 32) ) * (1 - this.inputPoolFee) - this.elBtcCostPerSecond() * time;
+				return ( this.stats.block_reward * time / diff * this.hashrate() / Math.pow(2, 32) ) * (1 - this.input.PoolFee) - this.elBtcCostPerSecond() * time;
 			};
 		    calulatorParams = params;
 
 		    params.init = function() {
 			    this.calc_coins_constants();
 
-			    this.result = {profitList: [], btcSum: 0, diffList: [['Date', 'Difficulty'], [new Date(this.stats.timestamp), this.inputDifficulty]], startTime: this.stats.timestamp / 1000 };
+			    this.result = {profitList: [], btcSum: 0, diffList: [['Date', 'Difficulty'], [new Date(this.stats.timestamp), this.input.Difficulty]], startTime: this.stats.timestamp / 1000 };
 			    this.current = {};
 				this.current.step = 0;
 				this.current.stop = false;
-		    	this.current.diff = this.inputDifficulty;
+		    	this.current.diff = this.input.Difficulty;
 		    	this.current.n_blocks = this.stats.n_blocks_total;
 		    	this.current.startTimePeriod = this.stats.timestamp / 1000;
 		    	this.current.endTimePeriod = this.current.startTimePeriod + this.stats.next_diff_time_left;
 
-		    	this.result.timeDiff = 0.5 * this.stats.blocks_between_recalc * (this.stats.minutes_between_blocks_normal * 60 * (1 + 1/(1 + this.inputDifficultyIncrement))) /60/60/24;
+		    	this.result.timeDiff = 0.5 * this.stats.blocks_between_recalc * (this.stats.minutes_between_blocks_normal * 60 * (1 + 1/(1 + this.input.DifficultyIncrement))) /60/60/24;
 		    	this.result.timeDiff = this.result.timeDiff.toFixed(2);
 			};
 		    params.calc_profit_step = function(){
 			    var time_interval = this.current.endTimePeriod - this.current.startTimePeriod;
 			    var pass_iteration = false;
 
-			    if (isNaN(this.inputStartDate) || this.current.startTimePeriod >= this.inputStartDate)
+			    if (isNaN(this.input.StartDate) || this.current.startTimePeriod >= this.input.StartDate)
 			    {
 			    	// this.inputStartDate = NaN;
 			    }
-			    else if (this.current.endTimePeriod < this.inputStartDate)
+			    else if (this.current.endTimePeriod < this.input.StartDate)
 			    {
 			    	time_interval = 0;
 			    	pass_iteration = true;
 			    }
 			    else
 			    {
-			    	this.result.startTime = this.inputStartDate;
-			    	time_interval = this.current.endTimePeriod - this.inputStartDate;
+			    	this.result.startTime = this.input.StartDate;
+			    	time_interval = this.current.endTimePeriod - this.input.StartDate;
 			    }
 
-			    if (!isNaN(this.inputEndDate) && this.current.endTimePeriod > this.inputEndDate)
+			    if (!isNaN(this.input.EndDate) && this.current.endTimePeriod > this.input.EndDate)
 			    {
-			    	time_interval -= this.current.endTimePeriod - this.inputEndDate;
-			    	this.current.endTimePeriod = this.inputEndDate;
+			    	time_interval -= this.current.endTimePeriod - this.input.EndDate;
+			    	this.current.endTimePeriod = this.input.EndDate;
 			    	this.current.stop = true;
 				}
 				var profit = this.getProfit(this.current.diff, time_interval);
 
 				if (!pass_iteration)
 				{
-			    	if (isNaN(this.inputEndDate) && params.current.step >= 3 && profit <= 1e-6)
+			    	if (isNaN(this.input.EndDate) && params.current.step >= 3 && profit <= 1e-6)
 			    		this.current.stop = true;
 			    	else {
 				    	this.result.btcSum += profit;
 					    this.result.profitList.push({
 					    	date: new Date(this.current.endTimePeriod * 1000), 
 					    	diff: this.current.diff, 
-					    	profit: profit * this.inputCurrencyRate, 
-					    	result: this.result.btcSum * this.inputCurrencyRate});
+					    	profit: profit * this.input.CurrencyRate, 
+					    	result: this.result.btcSum * this.input.CurrencyRate});
 					}
 				}
 
@@ -247,10 +270,10 @@
 				{
 				    this.result.diffList.push([new Date(this.current.endTimePeriod * 1000), this.current.diff]);
 				    this.current.step += 1;
-			    	this.current.diff *= 1 + this.inputDifficultyIncrement;
+			    	this.current.diff *= 1 + this.input.DifficultyIncrement;
 			    	this.current.n_blocks += this.stats.blocks_between_recalc;
 				    this.current.startTimePeriod = this.current.endTimePeriod;
-				    time_interval = 0.5 * this.stats.blocks_between_recalc * (this.stats.minutes_between_blocks_normal * 60 * (1 + 1/(1 + this.inputDifficultyIncrement)));
+				    time_interval = 0.5 * this.stats.blocks_between_recalc * (this.stats.minutes_between_blocks_normal * 60 * (1 + 1/(1 + this.input.DifficultyIncrement)));
 				    this.current.endTimePeriod = this.current.startTimePeriod + time_interval;
 				    this.result.diffList.push([new Date((this.current.startTimePeriod + 1) * 1000), this.current.diff]);
 				}
@@ -272,14 +295,11 @@
 			    // var prevDiff = stats['difficulty'];
 			    // chartDiffArray.push([, prevDiff]);
 			    //chartArray.push([prevDate, 0, 0]);
-				function padStr(i) {
-				    return (i < 10) ? "0" + i : "" + i;
-				}
 
 				$.each(profit_list, function(i)
 				{
 				    var datetime = profit_list[i]['date'];
-				    var dateStr = padStr(datetime.getDate()) + '-' + padStr(datetime.getMonth() + 1) + '-' + datetime.getFullYear();
+				    var dateStr = getDateStr(datetime);
 			    	
 			    	resultTable.append('<tr><td>'+ 
 			    		dateStr +'</td><td>'+ 
@@ -330,12 +350,14 @@
 
 			    console.log(params.result.btcSum);
 			    var res_str = params.result.btcSum.toFixed(6) + ' ' + base_crypto;
-			    if (params.inputCurrency != 'BASE_CURR')
+			    if (params.input.Currency != 'BASE_CURR')
 			    { 
-			    	res_str += ' = ' + (params.result.btcSum*params.inputCurrencyRate).toFixed(0) + ' ' + params.inputCurrency;
+			    	res_str += ' = ' + (params.result.btcSum*params.input.CurrencyRate).toFixed(0) + ' ' + params.input.Currency;
 				}
 			    $("#result").text(res_str);
-			    $("#resultDiffTime").text(params.result.timeDiff + ' days')
+			    $("#resultDiffTime").text(params.result.timeDiff + ' days');
+			    $("#result_h").text("Result for " + base_crypto);
+		    	update_saved_url();
     	};
 
     	var update_curr_rate = function(){
@@ -371,6 +393,18 @@
 	    	$("#inputCurrencyRate").val(rate);
     	};
 
+    	var geted_stats = function(from){
+			base_crypto = location.hash.replace("#","");
+			if (base_crypto == '')
+			{
+				base_crypto = 'BTC';
+			}
+			if (base_crypto == from || (base_crypto != "BTC" && from == "LTC"))
+			{
+				change_crypto();
+			}
+    	}
+
     	var change_crypto = function(crypto){
     		if (crypto == undefined)
     		{
@@ -390,7 +424,7 @@
 			{
 				stats = btc_stats;
 				stats.reward_halved_blocks = 210000;
-				stats.diff_history = [1418481395.2626355, 1789546951.0532405, 2193847870.174279, 2621404453.0646152, 3129573174.5222874];
+				stats.diff_history = [1418481395.2626355, 1789546951.0532405, 2193847870.174279, 2621404453.0646152, 3129573174.5222874, 3815723798.81];
 				stats.minutes_between_blocks_normal = 10;
 				stats.blocks_between_recalc = 2016;
 			}
@@ -413,19 +447,21 @@
 	     	else if ($("#inputCurrency_btc_option").length == 0){
 	     		$("#inputCurrency").append('<option id="inputCurrency_btc_option" value="BTC">BTC</option>');
 	     	}
-	     	update_curr_rate();
+	     	// update_curr_rate();
 	    	calc();
 	    };
 
 
      $(document).ready(function(){
-
     	var btc_url = 'http://xn--90aoahqe0a.xn--p1ai/bitcoin_stats.php?url=https://blockchain.info/ru/stats?format=json';
+
     	var coins_url = 'http://xn--90aoahqe0a.xn--p1ai/bitcoin_stats.php?url=http://www.coinchoose.com/api.php?base=BTC';
     	$.getJSON( btc_url, function( data ) {
     		if (data['status']['http_code'] == 200)
     		{
     			btc_stats = data['contents'];
+    			btc_market_price_usd = btc_stats.market_price_usd;
+    			geted_stats("BTC");
     		}
 		});
 
@@ -439,62 +475,70 @@
 				sha_list.empty();
 
 				$.each(coins_stats, function(key, value) { 
-					// if (value.networkhashrate <= 0)
-					// {
-     // 					console.log('Not valid networkhashrate', value.symbol, value.name, value.algo);
-					// }
-					// else
-					// {
-						if (value.algo == "scrypt")
-						{
-	     					scrypt_list.append('<li><a href="#' + value.symbol +'">'+value.name+'</a></li>');
-	     				}
-	     				else if (value.algo == "SHA-256")
-						{
-	     					sha_list.append('<li><a href="#' + value.symbol +'">'+value.name+'</a></li>');
-	     				}
-	     				else
-	     				{
-	     					console.log(value.symbol, value.name, value.algo);
-	     				}
-	     			// }
+					if (value.algo == "scrypt")
+					{
+     					scrypt_list.append('<li><a href="#' + value.symbol +'">'+value.name+'</a></li>');
+     				}
+     				else if (value.algo == "SHA-256")
+					{
+     					sha_list.append('<li><a href="#' + value.symbol +'">'+value.name+'</a></li>');
+     				}
+     				else
+     				{
+     					console.log(value.symbol, value.name, value.algo);
+     				}
 				});
-
-				// $.each($("#crypto_coins li a"), function(key, value){
-					// console.log(key, value);
-					// value.click(function(){
-//						var crypto = location.hash.replace("#","");
-					// 	change_crypto();
-					// });
-				// })
-				change_crypto();
+				geted_stats("LTC");
     		}
 		});
 
      	$("#bitcoin_on").click(function() {
      		location.hash = '#BTC';
-			// change_crypto('BTC');
 		});
 
      	$("#litecoin_on").click(function() {
      		location.hash = '#LTC';
-			// change_crypto('LTC');
 		});
 
+		var search = location.search.substring(1);
+		if (search.length > 0) {
+			var inputParams = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+
+			var inputs = $('#calculator-form form :input');
+			inputs.each(function() {
+					var val = undefined;
+					var id = $(this).attr('id');
+					if (id && id.indexOf("input") == 0) {
+						id = id.replace("input", "");
+						val = inputParams[id];
+						if (id == 'DifficultyIncrement' || id == 'PoolFee')
+						{
+							val *= 100;
+						}
+						else if (id == 'StartDate' || id == 'EndDate')
+						{
+							if (val != "NaN")
+							{
+								val = getDateStr(new Date(val*1000));
+							}
+						}
+		        	}
+		        	if (val != undefined){
+		        		$(this).val(val);
+		        	}
+				});
+		}
+
 		$('#calculator-form form :input').each(function() {
-			// var id = $(this).attr('id');
-			// var val = $(this).val();
 			$(this).change(function(event) {
 				calc();
 			});
 		});
 
-     	// change_crypto();
-
 	    $("#inputCurrency").change(function(event) {
-	    	update_curr_rate();
+	    	// update_curr_rate();
 	    	calc();
-	    }).change();
+	    });
 
 	    $(window).on('hashchange', function() {
 	    	change_crypto();
