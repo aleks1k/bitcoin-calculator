@@ -521,6 +521,9 @@
 							{
 								val = getDateStr(new Date(val*1000));
 							}
+							else{
+								val = undefined;
+							}
 						}
 		        	}
 		        	if (val != undefined){
