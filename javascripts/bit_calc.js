@@ -427,6 +427,7 @@
 				stats.diff_history = [1418481395.2626355, 1789546951.0532405, 2193847870.174279, 2621404453.0646152, 3129573174.5222874, 3815723798.81];
 				stats.minutes_between_blocks_normal = 10;
 				stats.blocks_between_recalc = 2016;
+				stats.market_price_usd = 500;
 			}
 			else// if (base_crypto == 'LTC')
 			{
