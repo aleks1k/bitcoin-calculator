@@ -288,6 +288,12 @@
 
 			    var resultTable = $("#resultTable");
 				resultTable.empty();
+				resultTable.append("<thead><tr><th>" + resx("tableHeaderNextDiff") + "</th><th>"
+					+ resx("tableHeaderProfit") + "</th><th>"
+					+ resx("tableHeaderProfitSummary") +
+					"</th></tr></thead><tbody></tbody>");
+
+				resultTable = $("#resultTable tbody");
 
 			    var chartArray = [['Date', 'Profit'], [new Date(params.result.startTime*1000), 0]];
 			    var chartDiffArray = [['Date', 'Difficulty']];
@@ -322,7 +328,7 @@
 				var data = google.visualization.arrayToDataTable(chartArray);
 
 				var options = {
-				  title: 'Profit',
+				  title: resx('profit_chart_title'),
 				  legend: {position: 'none'},
 				  height: 400,
 				  vAxis: {title: params.currency,  titleTextStyle: {color: '#333'}, minValue: 0}
@@ -339,7 +345,7 @@
 				data = google.visualization.arrayToDataTable(params.result.diffList);
 
 				options = {
-				  title: 'Difficulty',
+				  title: resx('diff_chart_title'),
 				  legend: {position: 'none'},
 				  height: 400,
 				  vAxis: {minValue: 0}
@@ -460,7 +466,8 @@
     		if (data['status']['http_code'] == 200)
     		{
     			btc_stats = data['contents'];
-    			btc_market_price_usd = btc_stats.market_price_usd;
+    			if (btc_stats.market_price_usd != 0)
+	    			btc_market_price_usd = btc_stats.market_price_usd;
     			geted_stats("BTC");
     		}
 		});
@@ -490,6 +497,22 @@
 				});
 				geted_stats("LTC");
     		}
+		});
+
+		$('label').each(function() {
+			var for_attr = $(this).attr('for');
+			console.log(for_attr);
+		
+			if (for_attr && for_attr.indexOf("input") == 0) {
+				// name = for_attr.replace("input", "");
+				$(this).text(resx(for_attr));
+        	}
+        	else{
+        		var lid = $(this).attr('id');
+        		if (lid && lid.indexOf("static") == 0) {
+					$(this).text(resx(lid));
+        		}
+        	}
 		});
 
      	$("#bitcoin_on").click(function() {

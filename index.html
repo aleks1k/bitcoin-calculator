@@ -38,9 +38,11 @@
 
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="javascripts/lang.js"></script>
     <script type="text/javascript" src="javascripts/bit_calc.js"></script>
     <script type="text/javascript" src="javascripts/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="javascripts/locales/bootstrap-datepicker.ru.js"></script>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   </head>
 
   <body>
@@ -176,17 +178,7 @@
 	</form>
 </div>
 <div class="row">
-<table id="mylist" class="table table-hover col-sm-6">
-    <thead>
-        <tr>
-            <th>Next Difficulty Date</th>
-            <th>Profit between difficulties recalculate</th>
-            <th>Profit Summary</th>
-        </tr>
-    </thead>
-    <tbody id="resultTable">
-    </tbody>
-</table>
+<table id="resultTable" class="table table-hover col-sm-6"></table>
 </div>
 		</div>
 		<div class="col-md-6">
@@ -195,7 +187,7 @@
 		<h3 id="result_h">Results</h3>
 		<p>
 		<div class="row">
-		    <label class="col-sm-4 control-label">Share your analysis:</label>
+		    <label class="col-sm-4 control-label" id="staticShareLink">Share your analysis:</label>
 		    <div class="col-sm-6" rel="tooltip" title="copy this url">
 				<div class="input-group" id="savedUrl">		    	
 		    		<input type="text" onclick="this.select();" class="form-control readOnly"><a class="input-group-addon"><i class="glyphicon glyphicon-export"></i></a>
@@ -203,11 +195,11 @@
 		    </div>
 		</div>
 		<div class="row">
-		    <label class="col-sm-4 control-label">All Profit:</label>
+		    <label class="col-sm-4 control-label" id="staticAllProfit">All Profit:</label>
 		    <label class="col-sm-6 form-control-static" id="result"></label>
 		</div>
 		<div class="row">
-			<label class="col-sm-4 control-label">Time between difficulties recalculate:</label>
+			<label class="col-sm-4 control-label" id="staticRoundTime">Time between difficulties recalculate:</label>
 			<label class="col-sm-6 form-control-static" id="resultDiffTime">10 days</label>
 		</div>
 		</p>
@@ -227,7 +219,7 @@
 	    $(function () {
         	$("[rel='tooltip']").tooltip();
     	});
-    	
+
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 		</script>
@@ -238,5 +230,13 @@
 		} catch(err) {}
 	</script>
 
+<!-- Калькулятор -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4007010318236560"
+     data-ad-slot="4563961321"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
   </body>
 </html>
