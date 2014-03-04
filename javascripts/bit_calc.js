@@ -39,8 +39,8 @@
 
 		var getNextDiff = function(difficulty, n_blocks_total, minutes_between_blocks, blocks_between_recalc, minutes_between_blocks_normal)
 		{
-		    var allNetworkHashrate = difficulty * Math.pow(2, 32) / ( minutes_between_blocks * 60 ) / 1e12;
-		    var currentNetworkDifficulty = allNetworkHashrate / (Math.pow(2, 32) / ( minutes_between_blocks_normal * 60 ) / 1e12);
+		    var allNetworkHashrate = difficulty * Math.pow(2, 32) / ( minutes_between_blocks * 60 );
+		    var currentNetworkDifficulty = allNetworkHashrate / (Math.pow(2, 32) / ( minutes_between_blocks_normal * 60 ));
 
 		    var difficultyIncrisePerBlock = (currentNetworkDifficulty - difficulty) / (n_blocks_total % blocks_between_recalc);
 
@@ -88,7 +88,7 @@
 					};
 					if (entry.networkhashrate > 0)
 		    		{
-    					st_res.minutes_between_blocks = entry.difficulty * Math.pow(2, 32) / ( entry.networkhashrate * 60 ) / 1e12;
+    					st_res.minutes_between_blocks = entry.difficulty / entry.networkhashrate * Math.pow(2, 32) / 60;
 		    		}
 		    		else
 		    		{
@@ -196,7 +196,7 @@
 		    		this.stats.block_reward = this.stats.reward_func(this);
 		    		console.log(this.stats.block_reward);
 		    	}
-		    	this.stats.all_hashrate = this.input.Difficulty * Math.pow(2, 32) / ( this.stats.minutes_between_blocks * 60 ) / 1e12;
+		    	this.stats.all_hashrate = this.input.Difficulty * Math.pow(2, 32) / ( this.stats.minutes_between_blocks * 60 );
 		    	this.stats.blocks_left = this.stats.blocks_between_recalc - this.stats.n_blocks_total % this.stats.blocks_between_recalc;
 
 			    //this.n_blocks = Math.ceil(n_blocks_total / blocks_between_recalc);
@@ -206,7 +206,7 @@
 
 		    params.getProfit = function(diff, time)
 			{
-				return ( this.stats.block_reward * time / diff * this.hashrate() / Math.pow(2, 32) ) * (1 - this.input.PoolFee) - this.elBtcCostPerSecond() * time;
+				return ( this.stats.block_reward * time * this.hashrate() / diff / Math.pow(2, 32) ) * (1 - this.input.PoolFee) - this.elBtcCostPerSecond() * time;
 			};
 		    calulatorParams = params;
 
