@@ -97,7 +97,7 @@
 		    		if (entry.symbol == 'LTC')
 		    		{
 		    			st_res.reward_halved_blocks = 840000;
-						st_res.diff_history = [3300, 2820, 3508, 2674, 2690, 3207, 2871, 3322];
+						st_res.diff_history = [3300, 2820, 3508, 2674, 2690, 3207, 2871, 3322, 3145];
 		    		}
 		    		else if (entry.symbol == 'DOGE')
 		    		{
@@ -139,7 +139,7 @@
 		};
     	var calc = function()
     	{
-    		update_curr_rate();
+    		//update_curr_rate();
 
     		var inputs = $('#calculator-form form :input');
     		params = {input: {}};
@@ -223,7 +223,6 @@
 		    	this.current.endTimePeriod = this.current.startTimePeriod + this.stats.next_diff_time_left;
 
 		    	this.result.timeDiff = 0.5 * this.stats.blocks_between_recalc * (this.stats.minutes_between_blocks_normal * 60 * (1 + 1/(1 + this.input.DifficultyIncrement))) /60/60/24;
-		    	this.result.timeDiff = this.result.timeDiff.toFixed(2);
 			};
 		    params.calc_profit_step = function(){
 			    var time_interval = this.current.endTimePeriod - this.current.startTimePeriod;
@@ -354,15 +353,41 @@
 				var chartDiff = new google.visualization.AreaChart(document.getElementById('chart_diff_div'));
 				chartDiff.draw(data, options);
 
-			    console.log(params.result.btcSum);
-			    var res_str = params.result.btcSum.toFixed(6) + ' ' + base_crypto;
-			    if (params.input.Currency != 'BASE_CURR')
-			    { 
-			    	res_str += ' = ' + (params.result.btcSum*params.input.CurrencyRate).toFixed(0) + ' ' + params.input.Currency;
+			    // console.log(params.result.btcSum);
+			    var profitFormat = function(profit){
+				    var res_str = profit.toFixed(6) + ' ' + base_crypto;
+				    if (params.input.Currency != 'BASE_CURR')
+				    { 
+				    	res_str += ' = ' + (profit*params.input.CurrencyRate).toFixed(2) + ' ' + params.input.Currency;
+					}
+					return res_str;
+				};
+
+				var timeIntervalFormat = function(t){
+					return t.toFixed(2) + ' days'
 				}
-			    $("#result").text(res_str);
-			    $("#resultDiffTime").text(params.result.timeDiff + ' days');
+
+				var resultStats = {
+					AllProfit: profitFormat(params.result.btcSum),
+    				ProfitPerDay: profitFormat(params.result.btcSum / ((params.result.profitList[params.result.profitList.length - 1]['date'] - params.result.profitList[0]['date'])/1000/60/60/24)),
+					NextDiffTime: timeIntervalFormat((params.result.profitList[0]['date'] - params.stats.timestamp)/1000/60/60/24),
+					RoundTime: timeIntervalFormat(params.result.timeDiff),
+				};
+
 			    $("#result_h").text("Result for " + base_crypto);
+
+			    var result = $("#statsResultTable");
+				result.empty();
+				result.append("<tbody></tbody>");
+
+				result = $("#statsResultTable tbody");
+
+				$.each(resultStats, function(key, value) { 
+					result.append('<tr><td>'+ 
+				    		resx('static' + key) +'</td><td>'+ 
+				    		value +'</td></tr>');
+				});
+
 		    	update_saved_url();
     	};
 
@@ -454,7 +479,7 @@
 	     	else if ($("#inputCurrency_btc_option").length == 0){
 	     		$("#inputCurrency").append('<option id="inputCurrency_btc_option" value="BTC">BTC</option>');
 	     	}
-	     	// update_curr_rate();
+	     	update_curr_rate();
 	    	calc();
 	    };
 
@@ -563,7 +588,7 @@
 		});
 
 	    $("#inputCurrency").change(function(event) {
-	    	// update_curr_rate();
+	    	update_curr_rate();
 	    	calc();
 	    });
 

@@ -487,3 +487,7 @@ footer a:hover {
   padding: 15px 2px;
 
 }
+
+#statsResultTable td {
+  text-align: left;
+}
